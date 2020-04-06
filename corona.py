@@ -27,8 +27,10 @@ except NameError:
     xrange = range
 
 # Formata de maneira que cada linha da matriz X seja composta pelos 1 mes anteriores.
-
+# print(data.shape[0])
+print(data)
 for d in xrange(1,data.shape[0]):
+    print(type(data))
     x = data.iloc[d-1:d].values.ravel()
     y = data.iloc[d].values[0]
 
@@ -49,7 +51,6 @@ y_true = []
 #Itera pela série temporal treinando um novo modelo a cada mês
 end = y_data.shape[0]
 for i in range(1,end):
-
     x_train = x_data[:i,:]
     y_train = y_data[:i]
     
@@ -59,6 +60,7 @@ for i in range(1,end):
 
     model = LinearRegression(normalize=True)
     model.fit(x_train,y_train)
+    # print(x_train, y_train)
 
     y_pred.append(model.predict(x_test.reshape(1, -1))[0])
     y_pred_last.append(x_test[-1])
@@ -70,19 +72,20 @@ y_pred = np.array(y_pred)
 y_pred_last = np.array(y_pred_last)
 y_pred_ma = np.array(y_pred_ma)
 y_true = np.array(y_true)
+# print(y_pred)
+# print(y_pred.size)
+
+# #Imprime os erros na tela
+# print ('\nMean Absolute Percentage Error')
+# print ('MAPE Regressão Linear', mape(y_pred,y_true))
+# print ('MAPE Último Valor', mape(y_pred_last,y_true))
+# print ('MAPE Média Móvel', mape(y_pred_ma,y_true))
 
 
-#Imprime os erros na tela
-print ('\nMean Absolute Percentage Error')
-print ('MAPE Regressão Linear', mape(y_pred,y_true))
-print ('MAPE Último Valor', mape(y_pred_last,y_true))
-print ('MAPE Média Móvel', mape(y_pred_ma,y_true))
-
-
-print ('\nMean Absolute Error')
-print ('MAE Regressão Linear', mean_absolute_error(y_pred,y_true))
-print ('MAE Último Valor', mean_absolute_error(y_pred_last,y_true))
-print ('MAE Média Móvel', mean_absolute_error(y_pred_ma,y_true))
+# print ('\nMean Absolute Error')
+# print ('MAE Regressão Linear', mean_absolute_error(y_pred,y_true))
+# print ('MAE Último Valor', mean_absolute_error(y_pred_last,y_true))
+# print ('MAE Média Móvel', mean_absolute_error(y_pred_ma,y_true))
 
 
 #Faz o teste Wilcoxon Signed-Rank para determinar significado estatístico da diferença nos erros
@@ -95,12 +98,12 @@ print ('MAE Média Móvel', mean_absolute_error(y_pred_ma,y_true))
 
 #Cria um gráfico dos valores reais, previsões da regressão linear e do modelo utilizando o último valor
 # OPCIONAL - REQUER MATPLOTLIB
-from matplotlib import pyplot as plt
-plt.title('Casos de Corona Virus Brasil - Diario - 2020')
-plt.ylabel('Casos')
-plt.xlabel(u'Períodos (Dias)')
-reg_val, = plt.plot(y_pred,color='b',label=u'Regressão Linear')
-true_val, = plt.plot(y_true,color='g', label='Valores Reais')
-plt.xlim([0,y_data.shape[0]])
-plt.legend(handles=[true_val,reg_val])
-plt.show()
+# from matplotlib import pyplot as plt
+# plt.title('Casos de Corona Virus Brasil - Diario - 2020')
+# plt.ylabel('Casos')
+# plt.xlabel(u'Períodos (Dias)')
+# reg_val, = plt.plot(y_pred,color='b',label=u'Regressão Linear')
+# true_val, = plt.plot(y_true,color='g', label='Valores Reais')
+# plt.xlim([0,y_data.shape[0]])
+# plt.legend(handles=[true_val,reg_val])
+# plt.show()
