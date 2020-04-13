@@ -1,0 +1,32 @@
+sudo: required
+language: python3
+mono: none
+dist: xenial
+services:
+  - docker
+before_install:
+  # install heroku CLI
+  - wget -qO- https://toolbelt.heroku.com/install.sh | sh
+  # login to docker registries (dockerhub + heroku)
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - echo "$HEROKU_PASSWORD" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
+install:
+  - dotnet restore
+script:
+  # build docker images
+  - docker build -t apicorona .
+  - docker tag apicorona registry.heroku.com/$HEROKU_APP_NAME/web
+deploy:
+  provider: script
+  script: 
+    # push to dockerhub & heroku
+    docker push registry.heroku.com/$HEROKU_APP_NAME/web;
+    heroku container:release web --app $HEROKU_APP_NAME
+  on:
+    branch: master
+notifications:  
+  email:  
+    recipients:  
+      - rafael.cdc97@gmail.com  
+    on_success: always  
+    on_failure: always
